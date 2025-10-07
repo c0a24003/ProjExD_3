@@ -140,6 +140,20 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
+
+class Score:
+    def __init__(self):
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
+        self.color = (0, 0, 255) # 青色
+        self.score = 0 # スコアの初期値
+        self.img = self.fonto.render(f"スコア: {self.score}", 0, self.color)
+        self.rct = self.img.get_rect() # こうかとんのRect
+        self.rct.center = 100, HEIGHT - 50 # 画面左下に表示
+    
+    def update(self, screen: pg.Surface):
+        self.img = self.fonto.render(f"スコア: {self.score}", 0, self.color)
+        screen.blit(self.img, self.rct)
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -154,7 +168,7 @@ def main():
     # for _ in range(NUM_OF_BOMBS):
     #     bombs.append(Bomb((255, 0, 0), 10))  # リストに爆弾を追加
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]  # 内包表記で爆弾をリストに生成
-
+    score = Score()
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -179,13 +193,16 @@ def main():
                 if beam.rct.colliderect(bomb.rct):
                     beam, bombs[b] = None, None # ビームと爆弾を消す
                     bird.change_img(6, screen) # こうかとん画像を切り替える
+                    score.score += 1
+        
+
         bombs = [bomb for bomb in bombs if bomb is not None] # Noneを除去
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         if beam is not None:
             beam.update(screen)
-
+        score.update(screen)
         for bomb in bombs:
             if bomb is not None:
                 bomb.update(screen)
