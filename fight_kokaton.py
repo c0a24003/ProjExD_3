@@ -180,12 +180,8 @@ def main():
                 beam = Beam(bird)            
                 beams.append(beam)
         screen.blit(bg_img, [0, 0])
-        for beam in beams:
-            if beam is not None:
-                if check_bound(beam.rct) != (True, True):
-                    beams[-1] = None  # 画面外に出たらビームを消す
 
-        if bomb in bombs:
+        for bomb in bombs:
             if bird.rct.colliderect(bomb.rct):
                 # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
                 bird.change_img(8, screen)
@@ -197,27 +193,26 @@ def main():
                 return
         for b, bomb in enumerate(bombs): 
             for c, beam in enumerate(beams):
-                for beam in beams:
-                    if beam is not None:
-                        if bomb is not None:             
-                            if beam.rct.colliderect(bomb.rct):
-                                beams[c], bombs[b] = None, None # ビームと爆弾を消す
-                                bird.change_img(6, screen) # こうかとん画像を切り替える
-                                score.score += 1
+                if beam.rct.colliderect(bomb.rct):
+                    beams[c], bombs[b] = None, None # ビームと爆弾を消す
+                    bird.change_img(6, screen) # こうかとん画像を切り替える
+                    score.score += 1
             
-        beams = [beam for beam in beams if beam is not None] # Noneを除去
+            beams = [beam for beam in beams if beam is not None] # Noneを除去
         bombs = [bomb for bomb in bombs if bomb is not None] # Noneを除去
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
 
-        for beam in beams:
-            if beam is not None:
+        for b, beam in enumerate(beams):
+            if check_bound(beam.rct) != (True, True):
+                del beams[b]
+            else:
                 beam.update(screen)
-        score.update(screen)
         for bomb in bombs:
             if bomb is not None:
                 bomb.update(screen)
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
