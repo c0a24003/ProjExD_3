@@ -192,12 +192,15 @@ def main():
                 time.sleep(1)
                 return
         for b, bomb in enumerate(bombs): 
+            """
+            ビームと爆弾の当たり判定
+            空行を修正
+            """
             for c, beam in enumerate(beams):
                 if beam.rct.colliderect(bomb.rct):
                     beams[c], bombs[b] = None, None # ビームと爆弾を消す
                     bird.change_img(6, screen) # こうかとん画像を切り替える
-                    score.score += 1
-            
+                    score.score += 1 
             beams = [beam for beam in beams if beam is not None] # Noneを除去
         bombs = [bomb for bomb in bombs if bomb is not None] # Noneを除去
 
