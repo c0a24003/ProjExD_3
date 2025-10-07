@@ -154,6 +154,16 @@ class Score:
         self.img = self.fonto.render(f"スコア: {self.score}", 0, self.color)
         screen.blit(self.img, self.rct)
 
+class Explosion:
+    def __init__(self, gifs: list[pg.Surface]):
+        gif1 = pg.image.load("explosion.gif")
+        gif2 = pg.transform.rotozoom(gif1, 180, 1.0)
+        self.gifs.append(gif1)
+        self.gifs.append(gif2) 
+        gif1.rct = gif1.get_rect()
+        gif1.rct.center = (WIDTH//2, HEIGHT//2)
+        
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
